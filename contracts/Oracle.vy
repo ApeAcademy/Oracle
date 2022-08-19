@@ -6,11 +6,20 @@
 """
 
 price: public(uint256)
+oracle: public(address)
+
+
+@external
+def __init__():
+    self.oracle = msg.sender
+
 
 @external
 def set_price(price: uint256):
     """
     @notice Update the `price` that this contract stores
+    @dev Only `self.oracle` may update the price
     @param price The new price update
     """
+    assert msg.sender == self.oracle
     self.price = price

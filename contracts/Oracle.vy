@@ -4,9 +4,11 @@
     Prices are accurate to 6 decimal places
     (e.g. `price * eth_amount / 1e6 = usd_amount`)
 """
+MAX_UPDATE_DELAY: constant(uint256) = 5 * 60  # seconds
 
 price: public(uint256)
 oracle: public(address)
+last_update: public(uint256)
 
 
 @external
@@ -22,4 +24,8 @@ def set_price(price: uint256):
     @param price The new price update
     """
     assert msg.sender == self.oracle
+
+    assert block.timestamp >= self.last_update + MAX_UPDATE_DELAY
+
     self.price = price
+    self.last_update = block.timestamp
